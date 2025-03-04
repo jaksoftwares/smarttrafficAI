@@ -7,7 +7,7 @@ export default function Partners() {
   return (
     <section className="min-h-screen bg-gray-50 text-gray-900">
       {/* Hero Section */}
-      <div className="relative bg-blue-600 text-white py-24 text-center">
+      <div className="relative bg-blue-950 text-white py-24 text-center">
         <h1 className="text-4xl font-bold">Our Trusted Partners</h1>
         <p className="mt-4 text-lg">
           Collaborating with leading institutions and businesses to revolutionize traffic management.
@@ -54,8 +54,8 @@ export default function Partners() {
       <div className="text-center py-16">
         <h2 className="text-3xl font-semibold">Become a Partner</h2>
         <p className="text-gray-600 mt-2">Join us in shaping the future of smart traffic management.</p>
-        <div className="mt-6">
-          <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-semibold transition">
+        <div className="mt-6 items-center">
+          <button className="flex items-center bg-blue-950 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg font-semibold transition">
             <Mail className="mr-2" /> Get in Touch
           </button>
         </div>

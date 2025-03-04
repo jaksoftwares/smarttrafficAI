@@ -6,7 +6,7 @@ export default function About() {
             {/* Hero Section */}
         <section 
             className="h-[80vh] flex items-center justify-center text-center px-6 bg-white bg-cover bg-center"
-            style={{ backgroundImage: "url('/images/home-bg.jpeg')" }}
+            style={{ backgroundImage: "url('/images/about.jpeg')" }}
         >
             <div className="max-w-3xl bg-white bg-opacity-75 p-6 rounded-lg">
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900">
@@ -52,7 +52,7 @@ export default function About() {
               </p>
             </div>
             <div className="p-6 bg-gray-100 rounded-lg shadow-md">
-              <Image src="/images/lights.jpeg" alt="Real-time Monitoring" width={400} height={250} className="rounded-md" />
+              <Image src="/images/about.jpeg" alt="Real-time Monitoring" width={400} height={250} className="rounded-md" />
               <h3 className="text-xl font-semibold mt-4">Real-Time Traffic Monitoring</h3>
               <p className="text-gray-600 mt-2">
                 AI-integrated cameras and IoT sensors for live traffic insights.
@@ -100,7 +100,7 @@ export default function About() {
       </section>
 
       {/* Call-to-Action Section */}
-      <section className="py-20 bg-blue-500 text-white text-center">
+      <section className="py-20 bg-blue-950 text-white text-center">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold">Join the Future of Traffic Management</h2>
           <p className="mt-4 text-lg text-gray-200">

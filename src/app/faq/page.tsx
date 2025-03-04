@@ -68,7 +68,7 @@ export default function FAQsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="text-center py-20 px-6 bg-blue-600 text-white">
+      <div className="text-center py-20 px-6 bg-blue-950 text-white">
         <HelpCircle className="w-16 h-16 mx-auto mb-4" />
         <h1 className="text-5xl font-extrabold">Frequently Asked Questions</h1>
         <p className="text-lg mt-4 max-w-2xl mx-auto">

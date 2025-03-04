@@ -4,18 +4,23 @@ import {  Car, Eye, TrendingUp, Database, Shield, Map } from "lucide-react";
 export default function Features() {
   return (
     <main className="min-h-screen">
-      {/* Hero Section */}
-      <section className="h-[80vh] flex items-center justify-center text-center px-6 bg-white">
-        <div className="max-w-3xl">
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-900">
-            SmartTraffic AI Features
-          </h1>
-          <p className="mt-4 text-lg text-gray-600">
-            Discover the powerful AI-driven solutions that optimize urban traffic flow and enhance road safety.
-          </p>
-        </div>
-      </section>
+            {/* Hero Section */}
+        <section
+        className="h-[80vh] flex items-center justify-center text-center px-6 bg-cover bg-center relative"
+        style={{ backgroundImage: "url('/images/traffic.jpeg')" }}
+        >
+        {/* Dark Overlay for Readability */}
+        <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
+        <div className="max-w-3xl relative z-10">
+            <h1 className="text-4xl md:text-6xl font-bold text-white">
+            SmartTraffic AI Features
+            </h1>
+            <p className="mt-4 text-lg text-gray-200">
+            Discover the powerful AI-driven solutions that optimize urban traffic flow and enhance road safety.
+            </p>
+        </div>
+        </section>
       {/* Features List */}
       <section className="py-20 bg-gray-100 text-center">
         <div className="max-w-6xl mx-auto">
@@ -113,7 +118,7 @@ export default function Features() {
       </section>
 
       {/* Call-to-Action Section */}
-      <section className="py-20 bg-blue-500 text-white text-center">
+      <section className="py-20 bg-blue-950 text-white text-center">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold">Experience the Future of Traffic Management</h2>
           <p className="mt-4 text-lg text-gray-200">

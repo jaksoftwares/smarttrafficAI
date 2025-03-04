@@ -88,7 +88,7 @@ export default function Home() {
         </section>
   
         {/* Call-to-Action Section */}
-        <section className="py-20 bg-blue-600 text-white text-center">
+        <section className="py-20 bg-blue-950 text-white text-center">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl font-bold">Join the Future of Traffic Management</h2>
             <p className="mt-4 text-lg text-gray-200">
