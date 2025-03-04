@@ -1,4 +1,5 @@
 import Image from "next/image";
+import TeamSection from "./team";
 
 export default function About() {
   return (
@@ -98,6 +99,7 @@ export default function About() {
           </div>
         </div>
       </section>
+      <TeamSection/>
 
       {/* Call-to-Action Section */}
       <section className="py-20 bg-blue-950 text-white text-center">
