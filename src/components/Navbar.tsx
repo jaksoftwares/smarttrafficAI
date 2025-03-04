@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -12,9 +13,18 @@ export default function Navbar() {
   return (
     <nav className="bg-white shadow-md fixed w-full z-50">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo */}
-        <Link href="/" className="text-2xl font-bold text-blue-600 transition duration-300 hover:text-blue-700">
-          SmartTraffic AI
+        {/* Logo with Optimized Image */}
+        <Link href="/" className="flex items-center space-x-3">
+          <Image
+            src="/images/logo-g.jpeg"
+            alt="SmartTraffic AI Logo"
+            width={40} // Adjust size as needed
+            height={40}
+            priority // Ensures it loads fast
+          />
+          <span className="text-2xl font-bold text-blue-600 transition duration-300 hover:text-blue-700">
+            SmartTraffic AI
+          </span>
         </Link>
 
         {/* Desktop Menu */}
