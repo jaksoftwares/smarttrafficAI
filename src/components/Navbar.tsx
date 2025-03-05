@@ -11,16 +11,16 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-white shadow-md fixed w-full z-50">
+    <nav className="bg-white shadow-md fixed w-full z-50 border-b border-gray-200">
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo with Optimized Image */}
+        {/* Logo */}
         <Link href="/" className="flex items-center space-x-3">
           <Image
             src="/images/logo-g.jpeg"
             alt="SmartTraffic AI Logo"
-            width={40} // Adjust size as needed
+            width={40}
             height={40}
-            priority // Ensures it loads fast
+            priority
           />
           <span className="text-2xl font-bold text-blue-600 transition duration-300 hover:text-blue-700">
             SmartTraffic AI
@@ -70,9 +70,9 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Dropdown Menu with Animation */}
+      {/* Mobile Dropdown Menu - Fixed Overlapping Issue */}
       <div
-        className={`md:hidden bg-white shadow-md px-6 py-4 space-y-3 transition-all duration-300 ${
+        className={`fixed top-16 left-0 w-full bg-white shadow-md px-6 py-4 space-y-3 transition-all duration-300 md:hidden ${
           isOpen ? "opacity-100 scale-y-100" : "opacity-0 scale-y-95 pointer-events-none"
         } origin-top`}
       >
