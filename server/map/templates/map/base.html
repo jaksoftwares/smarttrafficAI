@@ -1,0 +1,38 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Site{% endblock %}</title>
+    <!-- CSS links -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- You can add more CSS, JavaScript links here -->
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="{% url 'home' %}">My Website</a>
+        </div>
+        <div class="navbar-menu">
+            <a href="{% url 'map' %}">Map</a>
+            <a href="{% url 'reroute' %}">Routes</a>
+            <!-- Add more navigation links as needed -->
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}
+        <!-- This is where the content from child templates will be inserted -->
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; {% now "Y" %} My Website. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript files -->
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

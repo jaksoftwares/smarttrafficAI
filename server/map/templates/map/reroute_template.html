@@ -1,0 +1,308 @@
+{% extends "map/base.html" %}
+
+{% block title %}Route Planner{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<!-- Include Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+    crossorigin=""/>
+<!-- Include Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+    crossorigin=""></script>
+<!-- Include Polyline decoder -->
+<script src="https://unpkg.com/@mapbox/polyline@1.1.1/src/polyline.js"></script>
+<style>
+    .route-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .route-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .route-card.active {
+        border: 2px solid #007bff;
+        background-color: #f8f9fa;
+    }
+    .route-step {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .route-step:last-child {
+        border-bottom: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Route Planner</h4>
+                </div>
+                <div class="card-body">
+                    <form id="routeForm" method="GET">
+                        <div class="form-group mb-3">
+                            <label for="origin">Starting point:</label>
+                            <input type="text" class="form-control" id="origin" name="origin" 
+                                placeholder="e.g., London" value="{{ request.GET.origin|default:'' }}" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="destination">Destination:</label>
+                            <input type="text" class="form-control" id="destination" name="destination" 
+                                placeholder="e.g., Manchester" value="{{ request.GET.destination|default:'' }}" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="mode">Travel mode:</label>
+                            <select class="form-control" id="mode" name="mode">
+                                <option value="driving" {% if selected_mode == 'driving' %}selected{% endif %}>Driving</option>
+                                <option value="walking" {% if selected_mode == 'walking' %}selected{% endif %}>Walking</option>
+                                <option value="cycling" {% if selected_mode == 'cycling' %}selected{% endif %}>Cycling</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Find Routes</button>
+                    </form>
+                </div>
+            </div>
+            
+            {% if routes_data %}
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Available Routes</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group">
+                            {% for route in routes_data.routes %}
+                                <div class="route-card card mb-2 mx-2 mt-2" data-route-id="{{ route.route_id }}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ route.summary }}</h5>
+                                        <p class="card-text">
+                                            <strong>Distance:</strong> {{ route.distance }}<br>
+                                            <strong>Duration:</strong> {{ route.duration }}
+                                        </p>
+                                        <button class="btn btn-sm btn-outline-primary show-details-btn">Show Details</button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body p-0">
+                    <div id="map" style="width: 100%; height: 500px;"></div>
+                </div>
+            </div>
+            
+            {% if routes_data %}
+                <div class="card" id="routeDetailsCard" style="display: none;">
+                    <div class="card-header">
+                        <h4>Route Details</h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="routeSteps" class="p-2"></div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    let map;
+    let routePolylines = [];
+    let routesData = [];
+    
+    function initMap() {
+        // Initialize the map centered on Europe if no routes, otherwise will be centered on route
+        map = L.map('map').setView([51.505, -0.09], 5);
+        
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        {% if routes_data %}
+            // Store routes data in JavaScript variable
+            routesData = {{ routes_data.routes|safe }};
+            
+            // Create markers for origin and destination
+            const originName = "{{ routes_data.origin_address }}";
+            const destName = "{{ routes_data.destination_address }}";
+            
+            // Get coordinates from the first route's first and last points
+            let firstRoute = routesData[0];
+            let routeCoordinates = polyline.decode(firstRoute.polyline);
+            
+            if (routeCoordinates && routeCoordinates.length > 0) {
+                // Origin marker
+                let originPoint = routeCoordinates[0];
+                L.marker([originPoint[0], originPoint[1]])
+                    .addTo(map)
+                    .bindPopup("<strong>Start:</strong> " + originName);
+                
+                // Destination marker
+                let destPoint = routeCoordinates[routeCoordinates.length - 1];
+                L.marker([destPoint[0], destPoint[1]])
+                    .addTo(map)
+                    .bindPopup("<strong>End:</strong> " + destName);
+                
+                // Draw all routes initially
+                drawAllRoutes();
+                
+                // Fit map to bounds of the first route
+                map.fitBounds(L.polyline(routeCoordinates).getBounds());
+            }
+            
+            // Set up click handlers for route cards
+            setupRouteCardHandlers();
+        {% endif %}
+    }
+    
+    function drawAllRoutes() {
+        // Clear any existing polylines
+        clearRoutePolylines();
+        
+        // Draw each route with a different color
+        routesData.forEach((route, index) => {
+            let coordinates = polyline.decode(route.polyline);
+            
+            // Cycle through colors for different routes
+            const colors = ['#3388ff', '#ff4433', '#33ff44', '#aa33ff', '#ffaa33'];
+            const color = colors[index % colors.length];
+            
+            let routePolyline = L.polyline(coordinates, {
+                color: color,
+                weight: 5,
+                opacity: 0.7
+            }).addTo(map);
+            
+            routePolylines.push(routePolyline);
+        });
+    }
+    
+    function highlightRoute(routeId) {
+        // Clear existing polylines
+        clearRoutePolylines();
+        
+        // Find the selected route
+        const route = routesData.find(r => r.route_id === routeId);
+        if (!route) return;
+        
+        // Decode and draw the selected route
+        let coordinates = polyline.decode(route.polyline);
+        let routePolyline = L.polyline(coordinates, {
+            color: '#3388ff',
+            weight: 6,
+            opacity: 0.9
+        }).addTo(map);
+        
+        routePolylines.push(routePolyline);
+        
+        // Fit map to the route bounds
+        map.fitBounds(routePolyline.getBounds());
+        
+        // Show steps for this route
+        showRouteSteps(route);
+    }
+    
+    function clearRoutePolylines() {
+        // Remove all existing polylines
+        routePolylines.forEach(polyline => {
+            map.removeLayer(polyline);
+        });
+        routePolylines = [];
+    }
+    
+    function setupRouteCardHandlers() {
+        const routeCards = document.querySelectorAll('.route-card');
+        
+        routeCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Remove active class from all cards
+                routeCards.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked card
+                this.classList.add('active');
+                
+                // Get route ID and highlight on map
+                const routeId = parseInt(this.getAttribute('data-route-id'));
+                highlightRoute(routeId);
+            });
+            
+            // Show details button handler
+            const detailsBtn = card.querySelector('.show-details-btn');
+            detailsBtn.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent card click
+                
+                // Get route ID
+                const routeId = parseInt(card.getAttribute('data-route-id'));
+                const route = routesData.find(r => r.route_id === routeId);
+                
+                // Show route steps
+                card.classList.add('active');
+                highlightRoute(routeId);
+            });
+        });
+        
+        // Select the first route by default
+        if (routeCards.length > 0) {
+            routeCards[0].click();
+        }
+    }
+    
+    function showRouteSteps(route) {
+        // Show route details card
+        document.getElementById('routeDetailsCard').style.display = 'block';
+        
+        // Get route steps container
+        const stepsContainer = document.getElementById('routeSteps');
+        stepsContainer.innerHTML = '';
+        
+        // Create heading
+        const heading = document.createElement('h5');
+        heading.className = 'p-2';
+        heading.textContent = `${route.summary} (${route.distance}, ${route.duration})`;
+        stepsContainer.appendChild(heading);
+        
+        // Add each step as a div
+        route.steps.forEach((step, index) => {
+            const stepDiv = document.createElement('div');
+            stepDiv.className = 'route-step';
+            
+            // Create step number
+            const stepNumber = document.createElement('span');
+            stepNumber.className = 'badge bg-primary me-2';
+            stepNumber.textContent = (index + 1);
+            
+            // Create instruction text
+            const instruction = document.createElement('span');
+            instruction.innerHTML = step.instruction;
+            
+            // Create distance/duration info
+            const details = document.createElement('div');
+            details.className = 'text-muted small mt-1';
+            details.textContent = `${step.distance} · ${step.duration}`;
+            
+            // Add all elements to step div
+            stepDiv.appendChild(stepNumber);
+            stepDiv.appendChild(instruction);
+            stepDiv.appendChild(details);
+            
+            // Add step div to container
+            stepsContainer.appendChild(stepDiv);
+        });
+    }
+    
+    // Initialize the map when the page loads
+    document.addEventListener('DOMContentLoaded', initMap);
+</script>
+{% endblock %}

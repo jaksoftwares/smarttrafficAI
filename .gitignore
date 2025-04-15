@@ -1,0 +1,75 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+### Dependencies (Node.js, Yarn, and related)
+# Specific folders to ignore
+smarttraffic-ai/node_modules/
+smarttraffic-ai/.pnp/
+smarttraffic-ai.pnp.*
+smarttraffic-ai/.yarn/*
+!smarttraffic-ai/.yarn/patches
+!smarttraffic-ai/.yarn/plugins
+!smarttraffic-ai/.yarn/releases
+!smarttraffic-ai/.yarn/versions
+
+### Testing
+smarttraffic-ai/coverage/
+
+### Next.js build & output
+smarttraffic-ai/.next/
+smarttraffic-ai/out/
+
+### Production build (Static assets, etc.)
+smarttraffic-ai/build/
+
+### Miscellaneous files
+smarttraffic-ai/.DS_Store
+smarttraffic-ai/*.pem
+
+### Debug logs
+smarttraffic-ai/npm-debug.log*
+smarttraffic-ai/yarn-debug.log*
+smarttraffic-ai/yarn-error.log*
+smarttraffic-ai/.pnpm-debug.log*
+smarttraffic-ai/lerna-debug.log*
+smarttraffic-ai/logs/
+
+### Environment files (can be opted in for committing if needed)
+smarttraffic-ai/.env*
+smarttraffic-ai/.env.local
+smarttraffic-ai/.env.development.local
+smarttraffic-ai/.env.test.local
+smarttraffic-ai/.env.production.local
+
+### Vercel configuration
+smarttraffic-ai/.vercel/
+
+### TypeScript build information
+smarttraffic-ai/*.tsbuildinfo
+smarttraffic-ai/next-env.d.ts
+
+### Editor-specific settings
+smarttraffic-ai/.vscode/
+smarttraffic-ai/.idea/
+smarttraffic-ai/*.swp
+
+### Django / Server-related files to ignore
+/server/__pycache__/
+/server/db.sqlite3
+/server/*.log
+/server/.env*
+/server/.venv
+/server/static/
+/server/media/
+/server/migrations/
+/server/.pytest_cache/
+
+### Docker-related files (if you're using Docker)
+server/Dockerfile
+server/docker-compose.yml
+
+### Virtual environment directories
+/server/.venv/
+/server/venv/
+
+### Ignore testing files if not required
+/server/tests/

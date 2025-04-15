@@ -1,0 +1,96 @@
+{% extends "map/base.html" %}
+
+{% block title %}Interactive Map{% endblock %}
+
+{% block head %}
+{{ block.super }}
+<!-- Include Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+    crossorigin=""/>
+<!-- Include Leaflet JavaScript -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
+    crossorigin=""></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Find Location</h4>
+                </div>
+                <div class="card-body">
+                    <form id="locationForm" method="GET">
+                        <div class="form-group">
+                            <label for="location">Enter a location:</label>
+                            <input type="text" class="form-control" id="location" name="location" 
+                                placeholder="e.g., New York, Tokyo, Paris" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Show Map</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {% if location %}
+            <div class="card">
+                <div class="card-header">
+                    <h4>{{ location.formatted_address }}</h4>
+                </div>
+                <div class="card-body">
+                    <p>Latitude: {{ location.lat }}</p>
+                    <p>Longitude: {{ location.lng }}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-12">
+            <div id="map" style="width: 100%; height: 500px;"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let map;
+    let marker;
+   
+    function initMap() {
+        {% if location %}
+            // If location is provided, center the map there
+            const lat = {{ location.lat }};
+            const lng = {{ location.lng }};
+           
+            // Initialize the map
+            map = L.map('map').setView([lat, lng], 12);
+           
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+           
+            // Add a marker for the location
+            marker = L.marker([lat, lng])
+                .addTo(map)
+                .bindPopup("{{ location.formatted_address }}")
+                .openPopup();
+        {% else %}
+            // Default to a world view if no location is specified
+            map = L.map('map').setView([0, 0], 2);
+           
+            // Add OpenStreetMap tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+        {% endif %}
+    }
+   
+    // Initialize the map when the page loads
+    document.addEventListener('DOMContentLoaded', initMap);
+</script>
+{% endblock %}
