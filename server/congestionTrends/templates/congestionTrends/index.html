@@ -1,0 +1,166 @@
+{% extends 'partials/base.html' %}
+{% block content %}
+
+<!-- Dropdown to Select Day and Checkpoint Info -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3>{{ checkpoint_name|default:"Checkpoint" }} - Capacity: {{ checkpoint_capacity|default:"40" }}</h3>
+  <select id="daySelector" class="form-select w-auto">
+    {% for day in days %}
+      <option value="{{ day }}" {% if day == default_day %}selected{% endif %}>{{ day }}</option>
+    {% endfor %}
+  </select>
+</div>
+
+<!-- Label for Displaying Selected Date -->
+<div class="mb-3">
+  <h5>Todays Date: <span id="selectedDayLabel">{{ default_day }}</span></h5>
+</div>
+
+<!-- Chart Area -->
+<canvas id="trafficChart" height="150"></canvas>
+
+<!-- Action Form -->
+{% comment %} <div class="mt-5">
+  <h5>Update Traffic Entry</h5>
+  <form id="trafficForm">
+    <div class="row g-2">
+      <div class="col-md-2">
+        <input type="text" class="form-control" id="day" placeholder="Day (e.g. 2024-04-20)" required>
+      </div>
+      <div class="col-md-2">
+        <input type="text" class="form-control" id="hour" placeholder="Hour (e.g. 08)" required>
+      </div>
+      <div class="col-md-2">
+        <input type="number" class="form-control" id="count" placeholder="Car Count" required>
+      </div>
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-success">Add/Update</button>
+      </div>
+      <div class="col-md-2">
+        <button type="button" class="btn btn-danger" id="deleteBtn">Delete</button>
+      </div>
+    </div>
+  </form>
+</div> {% endcomment %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+
+<script>
+const ctx = document.getElementById('trafficChart').getContext('2d');
+let chart;
+
+// Define the threshold value dynamically from the backend
+const THRESHOLD = {{ checkpoint_capacity|default:40 }};
+
+// Function to format hours into 12-hour clock with AM/PM
+function formatHour(hour) {
+  const intHour = parseInt(hour, 10);
+  if (intHour === 0) return '12:00 AM';
+  if (intHour < 12) return `${intHour}:00 AM`;
+  if (intHour === 12) return '12:00 PM';
+  return `${intHour - 12}:00 PM`;
+}
+
+function renderChart(labels, data) {
+  console.log('Drawing bar graph with average data:', data); // Log the data being used to draw the graph
+  if (chart) chart.destroy();
+
+  // Format labels into 12-hour clock format
+  const formattedLabels = labels.map(formatHour);
+
+  // Assign colors based on the threshold
+  const backgroundColors = data.map(count => {
+    if (count < THRESHOLD) return 'rgba(75, 192, 192, 0.7)';  // Below threshold (Green)
+    else if (count < THRESHOLD + 20) return 'rgba(255, 206, 86, 0.7)'; // Near threshold (Yellow)
+    else return 'rgba(255, 99, 132, 0.7)';  // Above threshold (Red)
+  });
+
+  chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: formattedLabels, // Use formatted labels
+      datasets: [{
+        label: `Hourly Congestion Trends of Vehicles (Capacity: ${THRESHOLD})`,
+        data: data,
+        backgroundColor: backgroundColors,
+        borderColor: 'rgba(0, 0, 0, 0.9)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          title: { display: true, text: 'Hours of the Day' }
+        },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Average Number of Cars' }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return `${context.raw} vehicles`;
+            }
+          }
+        },
+        annotation: {
+          annotations: {
+            thresholdLine: {
+              type: 'line',
+              yMin: THRESHOLD,
+              yMax: THRESHOLD,
+              borderColor: 'rgba(255, 0, 0, 0.8)', // Red line
+              borderWidth: 2,
+              label: {
+                content: `Threshold: ${THRESHOLD}`,
+                enabled: true,
+                position: 'end',
+                backgroundColor: 'rgba(255, 0, 0, 0.8)',
+                color: 'white',
+                font: {
+                  size: 12
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function fetchAverageData() {
+  console.log('Fetching average hourly data'); // Log the fetch action
+  fetch('/congestionTrends/average_hourly_data/')
+    .then(res => {
+      if (!res.ok) {
+        console.error('Error fetching average hourly data:', res.statusText);
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      if (data.error) {
+        console.error('Server error:', data.error);
+        alert('Failed to fetch average hourly data');
+        renderChart([], []); // Clear the chart
+        return;
+      }
+      console.log('Average hourly data fetched successfully:', data); // Log the fetched data
+      renderChart(data.hours, data.averages);
+    })
+    .catch(error => console.error('Error fetching average hourly data:', error));
+}
+
+// Load the average chart on page load
+fetchAverageData();
+</script>
+
+{% endblock %}
