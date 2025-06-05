@@ -26,7 +26,7 @@ interface TrafficLight {
 
 export default function TrafficSimulation() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [timeElapsed, setTimeElapsed] = useState(0);
+  const [, setTimeElapsed] = useState(0);
   const [trafficData, setTrafficData] = useState({
     congestionLevel: 0,
     vehicleCount: { cars: 0, buses: 0, trucks: 0 },
@@ -43,7 +43,7 @@ export default function TrafficSimulation() {
     canvas.height = 600;
 
     // Traffic light system
-    let lights: TrafficLight[] = [
+    const lights: TrafficLight[] = [
       {
         id: 'north',
         position: { x: 330, y: 230 },
@@ -291,7 +291,7 @@ export default function TrafficSimulation() {
     const updateVehicles = () => {
       vehicles = vehicles.filter(vehicle => {
         let canMove = true;
-        let nextPos = { ...vehicle.position };
+        const nextPos = { ...vehicle.position };
 
         // Move in lane
         switch(vehicle.direction) {
@@ -470,3 +470,4 @@ return (
     />
   </div>
 );
+}
