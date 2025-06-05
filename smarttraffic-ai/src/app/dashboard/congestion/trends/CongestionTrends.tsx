@@ -82,7 +82,7 @@ const CongestionTrends = () => {
               <td className="p-2">Main Street</td>
               <td className="p-2">High</td>
             </tr>
-            {/* Add more rows as needed */}
+      
           </tbody>
         </table>
       </div>

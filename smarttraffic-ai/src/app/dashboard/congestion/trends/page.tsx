@@ -1,8 +1,6 @@
-// trends/page.tsx
-import dynamic from 'next/dynamic';
+"use client";
 
-// Dynamically import the CongestionTrends component with SSR disabled
-const CongestionTrends = dynamic(() => import('./CongestionTrends'), { ssr: false });
+import CongestionTrends from './CongestionTrends';
 
 export default function Page() {
   return <CongestionTrends />;
