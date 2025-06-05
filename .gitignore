@@ -3,6 +3,7 @@
 ### Dependencies (Node.js, Yarn, and related)
 # Specific folders to ignore
 smarttraffic-ai/node_modules/
+smarttraffic-ai/.next/
 smarttraffic-ai/.pnp/
 smarttraffic-ai.pnp.*
 smarttraffic-ai/.yarn/*
@@ -10,6 +11,16 @@ smarttraffic-ai/.yarn/*
 !smarttraffic-ai/.yarn/plugins
 !smarttraffic-ai/.yarn/releases
 !smarttraffic-ai/.yarn/versions
+
+node_modules/
+**/node_modules/
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.DS_Store
+.env
 
 ### Testing
 smarttraffic-ai/coverage/
