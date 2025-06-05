@@ -73,3 +73,6 @@ server/docker-compose.yml
 
 ### Ignore testing files if not required
 /server/tests/
+venv/
+config.bat
+node_modules
