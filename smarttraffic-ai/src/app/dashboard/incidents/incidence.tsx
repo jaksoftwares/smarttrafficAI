@@ -1,18 +1,14 @@
 // 'use client';
 
-// import React, { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
 // import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-// import { Input, DatePicker, message } from 'antd';
+// import { Form, Input, Button, Select, DatePicker } from 'antd';
 // import type { Dayjs } from 'dayjs';
 // import L from 'leaflet';
 // import 'leaflet/dist/leaflet.css';
 // import 'antd/dist/reset.css';
 
-// // Custom UI components (NOT AntD)
-// import { Select } from '@/components/ui/select';
-// import Button from '@/components/ui/button';
-
-// const { TextArea } = Input;
+// const { Option } = Select;
 
 // interface Incident {
 //   type: string;
@@ -24,35 +20,27 @@
 //   longitude: number;
 // }
 
+// interface FormValues {
+//   incidentType: string;
+//   incidentLocation: string;
+//   incidentDescription: string;
+//   incidentDate: Dayjs;
+// }
+
 // // Fix Leaflet's default icon issue
 // delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl;
 // L.Icon.Default.mergeOptions({
-//   iconRetinaUrl:
-//     'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+//   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
 //   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
 //   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 // });
 
-// const INCIDENT_TYPES = [
-//   'Accident',
-//   'Road Closure',
-//   'Construction',
-//   'Event',
-// ];
-
-// const IncidentReporting: React.FC = () => {
+// const IncidentReporting = () => {
 //   const [reportedIncidents, setReportedIncidents] = useState<Incident[]>([]);
 //   const [mapCenter] = useState<[number, number]>([51.505, -0.09]);
 
-//   // Controlled form states
-//   const [incidentType, setIncidentType] = useState<string>('');
-//   const [incidentLocation, setIncidentLocation] = useState<string>('');
-//   const [incidentDescription, setIncidentDescription] = useState<string>('');
-//   const [incidentDate, setIncidentDate] = useState<Dayjs | null>(null);
-
 //   useEffect(() => {
 //     const fetchReportedIncidents = async () => {
-//       // Simulated fetch
 //       const fetchedIncidents: Incident[] = [
 //         {
 //           type: 'Accident',
@@ -79,42 +67,18 @@
 //     fetchReportedIncidents();
 //   }, []);
 
-//   const handleSubmit = () => {
-//     if (!incidentType) {
-//       message.error('Please select an incident type');
-//       return;
-//     }
-//     if (!incidentLocation.trim()) {
-//       message.error('Please enter the location');
-//       return;
-//     }
-//     if (!incidentDescription.trim()) {
-//       message.error('Please describe the incident');
-//       return;
-//     }
-//     if (!incidentDate) {
-//       message.error('Please select the date');
-//       return;
-//     }
-
+//   const handleReportIncident = (values: FormValues) => {
 //     const newIncident: Incident = {
-//       type: incidentType,
-//       location: incidentLocation,
-//       description: incidentDescription,
-//       date: incidentDate.format('YYYY-MM-DD'),
+//       type: values.incidentType,
+//       location: values.incidentLocation,
+//       description: values.incidentDescription,
+//       date: values.incidentDate.format('YYYY-MM-DD'),
 //       status: 'Unresolved',
 //       latitude: mapCenter[0],
 //       longitude: mapCenter[1],
 //     };
 
 //     setReportedIncidents((prev) => [...prev, newIncident]);
-//     message.success('Incident reported successfully!');
-
-//     // Clear form
-//     setIncidentType('');
-//     setIncidentLocation('');
-//     setIncidentDescription('');
-//     setIncidentDate(null);
 //   };
 
 //   return (
@@ -125,58 +89,56 @@
 //       </p>
 
 //       {/* Form Section */}
-//       <div className="bg-gray-800 p-4 rounded-lg shadow-lg max-w-md mx-auto">
+//       <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
 //         <h2 className="text-xl text-indigo-300 mb-4">Report a New Incident</h2>
-
-//         <label className="block mb-3 text-white">
-//           Incident Type
-//           <Select
-//             value={incidentType || undefined}
-//             onValueChange={(value: string) => setIncidentType(value)}
-//             aria-label="Select Incident Type"
+//         <Form layout="vertical" onFinish={handleReportIncident}>
+//           <Form.Item
+//             label="Incident Type"
+//             name="incidentType"
+//             rules={[{ required: true, message: 'Please select an incident type' }]}
 //           >
-//             {INCIDENT_TYPES.map((type) => (
-//               <option key={type} value={type}>
-//                 {type}
-//               </option>
-//             ))}
-//           </Select>
-//         </label>
+//             <Select placeholder="Select type of incident">
+//               <Option value="Accident">Accident</Option>
+//               <Option value="Road Closure">Road Closure</Option>
+//               <Option value="Construction">Construction</Option>
+//               <Option value="Event">Event</Option>
+//             </Select>
+//           </Form.Item>
 
-//         <label className="block mb-3 text-white">
-//           Location
-//           <Input
-//             placeholder="Enter incident location"
-//             value={incidentLocation}
-//             onChange={(e) => setIncidentLocation(e.target.value)}
-//           />
-//         </label>
+//           <Form.Item
+//             label="Location"
+//             name="incidentLocation"
+//             rules={[{ required: true, message: 'Please enter the location' }]}
+//           >
+//             <Input id="incident-location" placeholder="Enter incident location" />
+//           </Form.Item>
 
-//         <label className="block mb-3 text-white">
-//           Description
-//           <TextArea
-//             rows={4}
-//             placeholder="Describe the incident"
-//             value={incidentDescription}
-//             onChange={(e) => setIncidentDescription(e.target.value)}
-//           />
-//         </label>
+//           <Form.Item
+//             label="Description"
+//             name="incidentDescription"
+//             rules={[{ required: true, message: 'Please describe the incident' }]}
+//           >
+//             <Input.TextArea rows={4} placeholder="Describe the incident" />
+//           </Form.Item>
 
-//         <label className="block mb-3 text-white">
-//           Incident Date
-//           <DatePicker
-//             value={incidentDate}
-//             onChange={(date) => setIncidentDate(date)}
-//           />
-//         </label>
+//           <Form.Item
+//             label="Incident Date"
+//             name="incidentDate"
+//             rules={[{ required: true, message: 'Please select the date' }]}
+//           >
+//             <DatePicker className="w-full" />
+//           </Form.Item>
 
-//         <Button type="primary" onClick={handleSubmit} className="w-full">
-//           Report Incident
-//         </Button>
+//           <Form.Item>
+//             <Button type="primary" htmlType="submit" className="w-full">
+//               Report Incident
+//             </Button>
+//           </Form.Item>
+//         </Form>
 //       </div>
 
 //       {/* Table Section */}
-//       <div className="bg-gray-800 p-4 rounded-lg shadow-lg max-w-4xl mx-auto">
+//       <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
 //         <h2 className="text-xl text-indigo-300 mb-2">Reported Incidents</h2>
 //         <table className="min-w-full text-sm text-white border-collapse border border-gray-600">
 //           <thead>
@@ -201,21 +163,15 @@
 //       </div>
 
 //       {/* Map Section */}
-//       <div className="bg-gray-800 p-4 rounded-lg shadow-lg max-w-4xl mx-auto">
+//       <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
 //         <h2 className="text-xl text-indigo-300 mb-2">Incident Locations on Map</h2>
-//         <MapContainer
-//           center={mapCenter}
-//           zoom={13}
-//           style={{ height: '400px', borderRadius: '8px' }}
-//         >
+//         <MapContainer center={mapCenter} zoom={13} style={{ height: '400px', borderRadius: '8px' }}>
 //           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 //           {reportedIncidents.map((incident, index) => (
 //             <Marker key={index} position={[incident.latitude, incident.longitude]}>
 //               <Popup>
-//                 <strong>{incident.type}</strong>
-//                 <br />
-//                 {incident.location}
-//                 <br />
+//                 <strong>{incident.type}</strong><br />
+//                 {incident.location}<br />
 //                 {incident.date}
 //               </Popup>
 //             </Marker>
