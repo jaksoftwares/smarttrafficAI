@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   LineChart,
   Line,
@@ -11,7 +11,10 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the MapComponent with SSR disabled
+const MapComponent = dynamic(() => import('./MapComponent'), { ssr: false });
 
 const data = [
   { name: 'Jan', congestion: 4000 },
@@ -23,12 +26,8 @@ const data = [
   { name: 'Jul', congestion: 3490 },
 ];
 
-const CongestionTrends = () => {
+export default function CongestionTrends() {
   const [trafficData] = useState(data);
-
-  useEffect(() => {
-    // Optionally fetch data here
-  }, []);
 
   return (
     <div className="p-6 space-y-6">
@@ -55,14 +54,7 @@ const CongestionTrends = () => {
       {/* Map Integration */}
       <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
         <h2 className="text-xl text-indigo-300">Congestion Hotspots</h2>
-        <MapContainer center={[51.505, -0.09]} zoom={13} style={{ height: "400px", borderRadius: "8px" }}>
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <Marker position={[51.505, -0.09]}>
-            <Popup>
-              <span>Congestion Area</span>
-            </Popup>
-          </Marker>
-        </MapContainer>
+        <MapComponent />
       </div>
 
       {/* Traffic Data Table */}
@@ -82,12 +74,9 @@ const CongestionTrends = () => {
               <td className="p-2">Main Street</td>
               <td className="p-2">High</td>
             </tr>
-      
           </tbody>
         </table>
       </div>
     </div>
   );
-};
-
-export default CongestionTrends;
+}
