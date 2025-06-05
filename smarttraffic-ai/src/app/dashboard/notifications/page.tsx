@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button'; // adjust path case as needed
-import { Select } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card } from '@/components/ui/card';
 
 type Notification = {
@@ -87,18 +87,19 @@ export default function NotificationsPage() {
 
       {/* Filter and Clear */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-        <Select
-          value={filter}
-          onValueChange={(value) => setFilter(value as typeof filter)}
-          options={[
-            { value: 'all', label: 'All Types' },
-            { value: 'alert', label: 'Alerts' },
-            { value: 'info', label: 'Info' },
-            { value: 'warning', label: 'Warnings' },
-            { value: 'success', label: 'Success' },
-          ]}
-          className="w-full sm:w-48"
-        />
+              <Select value={filter} onValueChange={(value) => setFilter(value as typeof filter)}>
+        <SelectTrigger className="w-full sm:w-48">
+          <SelectValue placeholder="Filter notifications" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Types</SelectItem>
+          <SelectItem value="alert">Alerts</SelectItem>
+          <SelectItem value="info">Info</SelectItem>
+          <SelectItem value="warning">Warnings</SelectItem>
+          <SelectItem value="success">Success</SelectItem>
+        </SelectContent>
+      </Select>
+
         <Button variant="destructive" onClick={clearRead} className="w-full sm:w-auto">
           Clear Read Notifications
         </Button>
