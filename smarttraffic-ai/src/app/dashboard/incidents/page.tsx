@@ -6,7 +6,7 @@ import { Form, Input, Button, Select, DatePicker } from 'antd';
 import type { Dayjs } from 'dayjs';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'antd/dist/reset.css'; 
+import 'antd/dist/reset.css';
 
 const { Option } = Select;
 
@@ -27,8 +27,8 @@ interface FormValues {
   incidentDate: Dayjs;
 }
 
-// Fix Leaflet's default icon issue in Next.js/React
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+// Fix Leaflet's default icon issue
+delete (L.Icon.Default.prototype as { _getIconUrl?: unknown })._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -74,7 +74,7 @@ const IncidentReporting = () => {
       description: values.incidentDescription,
       date: values.incidentDate.format('YYYY-MM-DD'),
       status: 'Unresolved',
-      latitude: mapCenter[0], // Use map center as placeholder
+      latitude: mapCenter[0],
       longitude: mapCenter[1],
     };
 
@@ -88,7 +88,7 @@ const IncidentReporting = () => {
         Report traffic incidents like accidents or road closures to help manage congestion.
       </p>
 
-      {/* Incident Reporting Form */}
+      {/* Form Section */}
       <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
         <h2 className="text-xl text-indigo-300 mb-4">Report a New Incident</h2>
         <Form layout="vertical" onFinish={handleReportIncident}>
@@ -108,23 +108,23 @@ const IncidentReporting = () => {
           <Form.Item
             label="Location"
             name="incidentLocation"
-            rules={[{ required: true, message: 'Please enter the location of the incident' }]}
+            rules={[{ required: true, message: 'Please enter the location' }]}
           >
-            <Input placeholder="Enter location of incident" />
+            <Input placeholder="Enter incident location" />
           </Form.Item>
 
           <Form.Item
             label="Description"
             name="incidentDescription"
-            rules={[{ required: true, message: 'Please provide a description of the incident' }]}
+            rules={[{ required: true, message: 'Please describe the incident' }]}
           >
-            <Input.TextArea rows={4} placeholder="Provide a brief description" />
+            <Input.TextArea rows={4} placeholder="Describe the incident" />
           </Form.Item>
 
           <Form.Item
             label="Incident Date"
             name="incidentDate"
-            rules={[{ required: true, message: 'Please select the incident date' }]}
+            rules={[{ required: true, message: 'Please select the date' }]}
           >
             <DatePicker className="w-full" />
           </Form.Item>
@@ -137,7 +137,7 @@ const IncidentReporting = () => {
         </Form>
       </div>
 
-      {/* Reported Incidents Table */}
+      {/* Table Section */}
       <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
         <h2 className="text-xl text-indigo-300 mb-2">Reported Incidents</h2>
         <table className="min-w-full text-sm text-white border-collapse border border-gray-600">
@@ -162,7 +162,7 @@ const IncidentReporting = () => {
         </table>
       </div>
 
-      {/* Incident Map */}
+      {/* Map Section */}
       <div className="bg-gray-800 p-4 rounded-lg shadow-lg">
         <h2 className="text-xl text-indigo-300 mb-2">Incident Locations on Map</h2>
         <MapContainer center={mapCenter} zoom={13} style={{ height: '400px', borderRadius: '8px' }}>
