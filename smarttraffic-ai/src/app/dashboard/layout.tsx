@@ -1,108 +1,102 @@
 "use client";
 import "@/styles/globals.css";
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useState, useEffect, createContext } from "react";
 import Sidebar from "./components/Sidebar"; 
-import RightSidebar from "./components/RightSidebar"; // Right Sidebar component
-import { HiOutlineSun, HiOutlineMoon } from "react-icons/hi"; // Icons for dark/light mode toggle
+import Topbar from "./components/Topbar";
+import RightSidebar from "./components/RightSidebar";
+
+// Create Context
+export const RightSidebarContext = createContext<{
+  setRightSidebarContent: (content: ReactNode) => void;
+  openRightSidebar: () => void;
+  closeRightSidebar: () => void;
+  toggleCollapse: () => void;
+  isCollapsed: boolean;
+}>({
+  setRightSidebarContent: () => {},
+  openRightSidebar: () => {},
+  closeRightSidebar: () => {},
+  toggleCollapse: () => {},
+  isCollapsed: false,
+});
+
 
 interface LayoutProps {
-  children: ReactNode; // Children components (the content of each page)
+  children: ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Sidebar open state
-  const [darkMode, setDarkMode] = useState(false); // Dark mode state
-  const [isRightSidebarOpen] = useState(true); // Right Sidebar open state
-  const [isCollapsed, setIsCollapsed] = useState(false); // Right Sidebar collapsed state
-
-  // Toggle dark mode on and off
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    if (!darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+  const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [rightSidebarContent, setRightSidebarContent] = useState<ReactNode>(null);
+  const handleToggleCollapse = () => {
+    setIsCollapsed(prev => !prev);
   };
 
-  // Check saved dark mode preference on initial load
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const toggleCollapse = () => setIsCollapsed(!isCollapsed);
+
+  const openRightSidebar = () => setIsRightSidebarOpen(true);
+  const closeRightSidebar = () => setIsRightSidebarOpen(false);
+
+  const toggleDarkMode = () => {
+    const theme = !darkMode ? "dark" : "light";
+    setDarkMode(!darkMode);
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  };
+
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") {
       setDarkMode(true);
       document.documentElement.classList.add("dark");
-    } else {
-      setDarkMode(false);
-      document.documentElement.classList.remove("dark");
     }
   }, []);
-
-  // Toggle the sidebar visibility
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  // Toggle right sidebar visibility and collapse state
-  const toggleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
 
   return (
     <html lang="en">
       <body className="bg-gray-50 text-gray-900 transition-all duration-300 ease-in-out">
-        <div className="flex min-h-screen bg-white dark:bg-gray-900">
-          {/* Sidebar */}
-          <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+        <RightSidebarContext.Provider
+          value={{
+            setRightSidebarContent,
+            openRightSidebar,
+            closeRightSidebar,
+            toggleCollapse,
+            isCollapsed,
+          }}
+        >
+          <div className="flex min-h-screen bg-white dark:bg-gray-900">
+            <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-          {/* Main Content Area */}
-          <div
-            className={`flex-1 p-6 transition-all duration-300 ease-in-out ${
-              isSidebarOpen ? "ml-64" : "ml-20"
-            } ${
-              isRightSidebarOpen
-                ? isCollapsed
-                  ? "mr-16"
-                  : "mr-64"
-                : "mr-0"
-            }`}
-          >
-            {/* Top Bar */}
-            <div className="flex justify-between items-center mb-6">
-              {/* Left: Region Drop Down */}
-              <div className="flex items-center space-x-4">
-                <select className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-white px-4 py-2 rounded-md">
-                  <option value="region1">Region 1</option>
-                  <option value="region2">Region 2</option>
-                  <option value="region3">Region 3</option>
-                </select>
-              </div>
-
-              {/* Right: Dark Mode Toggle */}
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={toggleDarkMode}
-                  className="text-xl text-gray-700 dark:text-white"
-                >
-                  {darkMode ? <HiOutlineSun /> : <HiOutlineMoon />}
-                </button>
+            <div
+              className={`flex-1 p-6 transition-all duration-300 ease-in-out ${
+                isSidebarOpen ? "ml-64" : "ml-20"
+              } ${
+                isRightSidebarOpen
+                  ? isCollapsed
+                    ? "mr-16"
+                    : "mr-64"
+                  : "mr-0"
+              }`}
+            >
+              <Topbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} selectedRegion={""} />
+              <div className="bg-gray-100 dark:bg-gray-900 rounded-lg shadow-md p-6">
+                {children}
               </div>
             </div>
 
-            {/* Main Content (Children Pages) */}
-            <div className="bg-gray-100 dark:bg-gray-900 rounded-lg shadow-md p-6">
-              {children} {/* Render the page content */}
-            </div>
+            <RightSidebar
+              isOpen={isRightSidebarOpen}
+              isCollapsed={isCollapsed}
+              toggleCollapse={handleToggleCollapse} 
+            >
+              {rightSidebarContent}
+            </RightSidebar>
           </div>
-
-          {/* Right Sidebar */}
-          <RightSidebar
-            isOpen={isRightSidebarOpen}
-            toggleCollapse={toggleCollapse}
-            isCollapsed={isCollapsed}
-          />
-        </div>
+        </RightSidebarContext.Provider>
       </body>
     </html>
   );

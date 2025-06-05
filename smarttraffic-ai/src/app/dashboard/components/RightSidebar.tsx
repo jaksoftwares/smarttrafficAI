@@ -1,59 +1,72 @@
-"use client";
-import { useState } from "react";
-import RightSidebarItem from "./RightSidebarItem"; // Import the clickable item component
-import RightSidebarContent from "./RightSidebarContent";
-
 interface RightSidebarProps {
-  isOpen: boolean; // Determines if the sidebar is open or closed
-  toggleCollapse: () => void; // Toggle collapse functionality
-  isCollapsed: boolean; // Collapse state
+  isOpen: boolean;
+  isCollapsed: boolean;
+  children: React.ReactNode;
+  toggleCollapse: () => void;
 }
 
-const RightSidebar = ({ isOpen, toggleCollapse, isCollapsed }: RightSidebarProps) => {
-  const [selectedItem, setSelectedItem] = useState<string | null>(null); // Track the selected item
-
-  // Handle item click
-  const handleItemClick = (item: string) => {
-    setSelectedItem(item); // Set the selected item
-  };
-
+const RightSidebar = ({ isOpen, isCollapsed, children, toggleCollapse }: RightSidebarProps) => {
   return (
     <div
-      className={`fixed top-0 right-0 h-full shadow-lg transition-all duration-300 ease-in-out ${
+      className={`fixed top-0 right-0 h-full shadow-lg transition-all duration-300 ease-in-out z-50 ${
         isOpen ? "translate-x-0" : "translate-x-full"
-      } ${isCollapsed ? "w-16" : "w-64"} bg-white dark:bg-gray-800`}
+      } ${isCollapsed ? "w-16" : "w-64"} bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700`}
     >
-      {/* Sidebar Header for Collapsing */}
-      <div className="flex justify-between items-center p-4">
-        <h2 className={`text-lg font-semibold text-gray-700 dark:text-white ${isCollapsed ? "hidden" : ""}`}>
+      {/* Top Bar with title and toggle button */}
+      <div className="flex justify-between items-center p-4 bg-gray-100 dark:bg-gray-900 rounded-t-lg shadow-md">
+        <h2
+          className={`text-xl font-semibold text-gray-700 dark:text-white ${
+            isCollapsed ? "hidden" : "block"
+          }`}
+        >
           Details
         </h2>
+
+        {/* Toggle Collapse Button */}
         <button
+          className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition duration-300"
           onClick={toggleCollapse}
-          className="text-xl text-gray-700 dark:text-white"
         >
-          {isCollapsed ? "→" : "←"} {/* Collapsing arrow */}
+          {isCollapsed ? (
+            <svg
+              className="w-6 h-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 9l6 6 6-6"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="w-6 h-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          )}
         </button>
       </div>
 
-      {/* Collapsible Sidebar Content */}
-      <div className={`space-y-4 mt-4 ${isCollapsed ? "hidden" : ""}`}>
-        <RightSidebarItem
-          onClick={() => handleItemClick("Item 1")}
-          label="Item 1"
-        />
-        <RightSidebarItem
-          onClick={() => handleItemClick("Item 2")}
-          label="Item 2"
-        />
-        <RightSidebarItem
-          onClick={() => handleItemClick("Item 3")}
-          label="Item 3"
-        />
-      </div>
-
-      {/* Display Content based on Selected Item */}
-      <RightSidebarContent selectedItem={selectedItem} />
+      {/* Sidebar Content */}
+      {!isCollapsed && (
+        <div className="p-4 text-gray-800 dark:text-gray-200 overflow-y-auto h-full">
+          {children}
+        </div>
+      )}
     </div>
   );
 };
