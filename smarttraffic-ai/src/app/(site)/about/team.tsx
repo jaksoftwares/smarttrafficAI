@@ -23,7 +23,7 @@ const teamMembers = [
   {
     name: "Felix Ombongi",
     role: "Data Scientist",
-    image: "/images/profile.jpg",
+    image: "/images/felix.jpg",
     bio: "Building scalable & efficient systems for SmartTraffic AI.",
     linkedin: "#",
     twitter: "#",
