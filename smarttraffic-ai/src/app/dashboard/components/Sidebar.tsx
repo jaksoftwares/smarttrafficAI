@@ -61,7 +61,7 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
             <span className="text-xl">U</span>
           </div>
           <div className={`ml-4 ${isOpen ? 'block' : 'hidden'}`}>
-            <p className="font-semibold">John Doe</p>
+            <p className="font-semibold">Joseph Kirika</p>
             <p className="text-sm text-gray-500 dark:text-gray-400">Admin</p>
           </div>
         </div>

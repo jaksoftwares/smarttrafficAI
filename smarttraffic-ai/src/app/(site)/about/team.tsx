@@ -15,7 +15,7 @@ const teamMembers = [
   {
     name: "Irke Konzolo",
     role: "Frontend Developer",
-    image: "/images/profile.jpeg",
+    image: "/images/iyke-konzolo.jpg",
     bio: "Expert in machine learning & urban mobility AI systems.",
     linkedin: "#",
     twitter: "#",
@@ -23,7 +23,7 @@ const teamMembers = [
   {
     name: "Felix Ombongi",
     role: "Data Scientist",
-    image: "/images/profile.jpeg",
+    image: "/images/profile.jpg",
     bio: "Building scalable & efficient systems for SmartTraffic AI.",
     linkedin: "#",
     twitter: "#",
@@ -31,7 +31,7 @@ const teamMembers = [
   {
     name: "Allan Canon",
     role: "AI Developer",
-    image: "/images/profile.jpeg",
+    image: "/images/profile.jpg",
     bio: "Crafting seamless & engaging user experiences.",
     linkedin: "#",
     twitter: "#",
@@ -39,15 +39,15 @@ const teamMembers = [
   {
     name: "John Kibet",
     role: "AI Developer",
-    image: "/images/profile.jpeg",
+    image: "/images/profile.jpg",
     bio: "Turning data into actionable insights for traffic control.",
     linkedin: "#",
     twitter: "#",
   },
   {
-    name: "Derrick Gacheru",
+    name: "Derrick Gachru",
     role: "AI Developer",
-    image: "/images/profile.jpeg",
+    image: "/images/profile.jpg",
     bio: "Spreading awareness & driving SmartTraffic AI adoption.",
     linkedin: "#",
     twitter: "#",
