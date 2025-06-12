@@ -1,6 +1,20 @@
-"use client"
-import { useState } from 'react';
-import { HiOutlineHome, HiOutlineChartBar, HiOutlineUser, HiOutlineCog, HiOutlineLogout, HiOutlineSun, HiOutlineMoon } from 'react-icons/hi';
+"use client";
+import { JSX, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  HiOutlineHome,
+  HiOutlineChartBar,
+  HiOutlineUser,
+  HiOutlineCog,
+  HiOutlineLogout,
+  HiOutlineSun,
+  HiOutlineMoon,
+  HiOutlineBell,
+  HiOutlineExclamation,
+  HiOutlineAdjustments,
+  HiOutlineCloud,
+  HiOutlineMap
+} from 'react-icons/hi';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -9,6 +23,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   const [darkMode, setDarkMode] = useState(false);
+  const router = useRouter();
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -21,9 +36,12 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
     }
   };
 
+  const navigateTo = (path: string) => {
+    router.push(path);
+  };
+
   return (
     <div className="flex">
-      {/* Sidebar Container */}
       <div
         className={`bg-white dark:bg-gray-800 text-gray-800 dark:text-white h-screen p-4 transition-all duration-300 ease-in-out fixed top-0 left-0 z-50 ${
           isOpen ? 'w-64' : 'w-20'
@@ -40,55 +58,52 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
         {/* User Info */}
         <div className="flex items-center mb-10">
           <div className="w-12 h-12 rounded-full bg-gray-500 text-white flex items-center justify-center">
-            {/* Placeholder for Profile Image */}
             <span className="text-xl">U</span>
           </div>
           <div className={`ml-4 ${isOpen ? 'block' : 'hidden'}`}>
-            <p className="font-semibold">John Doe</p>
+            <p className="font-semibold">Joseph Kirika</p>
             <p className="text-sm text-gray-500 dark:text-gray-400">Admin</p>
           </div>
         </div>
 
         {/* Navigation Links */}
         <div className="space-y-4">
-          <div className="flex items-center space-x-4">
-            <HiOutlineHome className="text-xl" />
-            <p className={`${isOpen ? 'block' : 'hidden'}`}>Home</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <HiOutlineChartBar className="text-xl" />
-            <p className={`${isOpen ? 'block' : 'hidden'}`}>Analytics</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <HiOutlineUser className="text-xl" />
-            <p className={`${isOpen ? 'block' : 'hidden'}`}>User Management</p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <HiOutlineCog className="text-xl" />
-            <p className={`${isOpen ? 'block' : 'hidden'}`}>Settings</p>
-          </div>
+          <NavItem icon={<HiOutlineHome />} label="Home" path="/dashboard" />
+          <NavItem icon={<HiOutlineChartBar />} label="Congestion Trends" path="/dashboard/congestion/trends" />
+          <NavItem icon={<HiOutlineUser />} label="User Management" path="/dashboard/users" />
+          <NavItem icon={<HiOutlineCog />} label="Settings" path="/dashboard/settings" />
+          <NavItem icon={<HiOutlineMap />} label="Real-time Traffic" path="/dashboard/realtime-traffic" />
+          <NavItem icon={<HiOutlineAdjustments />} label="Adaptive Control" path="/dashboard/adaptive-control" />
+          <NavItem icon={<HiOutlineExclamation />} label="Incidents" path="/dashboard/incidents" />
+          <NavItem icon={<HiOutlineChartBar />} label="Congestion Mgmt" path="/dashboard/congestion/management" />
+          <NavItem icon={<HiOutlineCloud />} label="Weather" path="/dashboard/weather" />
+          <NavItem icon={<HiOutlineBell />} label="Notifications" path="/dashboard/notifications" />
 
           {/* Dark Mode Toggle */}
           <div className="flex items-center space-x-4 mt-6">
             <button onClick={toggleDarkMode}>
-              {darkMode ? (
-                <HiOutlineSun className="text-xl" />
-              ) : (
-                <HiOutlineMoon className="text-xl" />
-              )}
+              {darkMode ? <HiOutlineSun className="text-xl" /> : <HiOutlineMoon className="text-xl" />}
             </button>
             <p className={`${isOpen ? 'block' : 'hidden'}`}>Dark Mode</p>
           </div>
 
-          {/* Logout Button */}
-          <div className="flex items-center space-x-4 mt-6">
+          {/* Logout */}
+          <div className="flex items-center space-x-4 mt-6 cursor-pointer" onClick={() => navigateTo('/dashboard/logout')}>
             <HiOutlineLogout className="text-xl" />
             <p className={`${isOpen ? 'block' : 'hidden'}`}>Logout</p>
           </div>
         </div>
       </div>
-
-      {/* Main Content Area */}
     </div>
   );
+
+  // Reusable navigation item component
+  function NavItem({ icon, label, path }: { icon: JSX.Element; label: string; path: string }) {
+    return (
+      <div className="flex items-center space-x-4 cursor-pointer" onClick={() => navigateTo(path)}>
+        <div className="text-xl">{icon}</div>
+        <p className={`${isOpen ? 'block' : 'hidden'}`}>{label}</p>
+      </div>
+    );
+  }
 }
