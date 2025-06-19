@@ -4,7 +4,7 @@ import Overview from './components/Overview';
 import CongestedPoints from './components/CongestedPoints';
 import CongestionGraph from './components/CongestionGraph';
 import HourlyCongestion from './components/HourlyCOngestion';
-import CameraFeed from './components/CameraFeed'; // Import the CameraFeed component
+import CameraFeed from './components/CameraFeed'; 
 import TrafficSimulation from './components/TrafficSimulation';
 
 export default function DashboardPage() {

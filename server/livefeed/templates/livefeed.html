@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Traffic Feed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    .video-container {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: white;
+      padding: 10px;
+      max-width: 960px;
+      width: 100%;
+    }
+    .video-container img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+    }
+    footer {
+      margin-top: 30px;
+      color: #666;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h2>Live Traffic Stream</h2>
+  <div class="video-container">
+    <img src="{% url 'video_feed' %}" alt="Live Traffic Feed">
+  </div>
+  <footer>
+    &copy; 2025 SmartTraffic AI - Live Feed Monitoring
+  </footer>
+</body>
+</html>
