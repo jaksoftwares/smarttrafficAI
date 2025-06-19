@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'vehicles',
     'map',
     'most_congested_points',
+    'congestionTrends'
 ]
 
 MIDDLEWARE = [
