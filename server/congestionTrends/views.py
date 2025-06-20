@@ -138,3 +138,24 @@ def average_hourly_data(request):
     except Exception as e:
         logger.error(f"Error calculating average hourly data: {e}")
         return JsonResponse({"error": "Failed to calculate average hourly data"}, status=500)
+
+
+@csrf_exempt
+def metadata(request):
+    try:
+        data = load_data()
+        days = sorted(data.keys())
+        default_day = days[-1] if days else None
+        checkpoint_name = "Main Gate"
+        checkpoint_capacity = 40
+
+        return JsonResponse({
+            "days": days,
+            "default_day": default_day,
+            "checkpoint_name": checkpoint_name,
+            "checkpoint_capacity": checkpoint_capacity,
+        })
+    except Exception as e:
+        logger.error(f"Error in metadata endpoint: {e}")
+        return JsonResponse({"error": "Failed to load metadata"}, status=500)
+
