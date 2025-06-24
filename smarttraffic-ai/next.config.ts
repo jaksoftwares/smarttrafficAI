@@ -11,7 +11,9 @@ const nextConfig: NextConfig = {
         pathname: '/vehicles/**',
       },
     ],
+    domains: ['openweathermap.org'],
   },
+
 };
 
 export default nextConfig;

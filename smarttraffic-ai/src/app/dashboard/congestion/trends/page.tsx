@@ -115,7 +115,6 @@ export default function CongestionPage() {
                 borderWidth: 2,
                 label: {
                   content: `Threshold: ${checkpointCapacity}`,
-                  enabled: true,
                   position: 'end',
                   backgroundColor: 'rgba(255, 0, 0, 0.8)',
                   color: 'white',
@@ -150,7 +149,7 @@ export default function CongestionPage() {
 
       <div className="mb-4">
         <h5 className="text-lg">
-          Today's Date: <span className="font-semibold">{selectedDay}</span>
+          Today&apos;s Date: <span className="font-semibold">{selectedDay}</span>
         </h5>
       </div>
 

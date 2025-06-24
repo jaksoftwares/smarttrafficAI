@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'vehicles',
     'map',
     'most_congested_points',
-    'congestionTrends'
+    'congestionTrends',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -90,6 +91,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core.wsgi.application'
+ASGI_APPLICATION = 'core.asgi.application'
+# Optional (for Redis backend if scaling later):
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+# }
 
 
 # Database

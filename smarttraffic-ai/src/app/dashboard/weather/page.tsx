@@ -10,7 +10,9 @@ import { Card } from '@/components/ui/card';
 const getWeatherIconUrl = (icon: string) =>
   `https://openweathermap.org/img/wn/${icon}@2x.png`;
 
-// Types
+// =======================
+// Type Definitions
+// =======================
 type WeatherCondition = {
   id: number;
   main: string;
@@ -41,47 +43,71 @@ type ForecastDay = {
   weather: WeatherCondition[];
 };
 
-type ForecastData = {
-  daily: ForecastDay[];
+type ForecastListEntry = {
+  dt: number;
+  dt_txt: string;
+  main: {
+    temp_min: number;
+    temp_max: number;
+  };
+  weather: WeatherCondition[];
 };
 
+// =======================
+// Main Component
+// =======================
 export default function WeatherPage() {
   const [city, setCity] = useState('Nairobi');
-  // const [city, setCity] = useState<string>('Nairobi');
-  const [query, setQuery] = useState<string>('');
+  const [query, setQuery] = useState('');
   const [currentWeather, setCurrentWeather] = useState<CurrentWeatherData | null>(null);
   const [forecast, setForecast] = useState<ForecastDay[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Replace with your OpenWeatherMap API key
   const API_KEY = '49cadfa4ac30ba38ba79bfa70d244582';
 
-  // Fetch current weather by city name
   const fetchWeather = async (cityName: string) => {
     try {
       setLoading(true);
       setError(null);
 
-      // Fetch current weather
+      // 1. Fetch current weather
       const currentRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(
-          cityName
-        )}&units=metric&appid=${API_KEY}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&units=metric&appid=${API_KEY}`
       );
       if (!currentRes.ok) throw new Error('City not found');
       const currentData: CurrentWeatherData = await currentRes.json();
+      setCurrentWeather(currentData);
 
-      // Fetch One Call API forecast using lat/lon
+      // 2. Fetch 5-day forecast
       const { lat, lon } = currentData.coord;
       const forecastRes = await fetch(
-        `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=current,minutely,hourly,alerts&units=metric&appid=${API_KEY}`
+        `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
       );
       if (!forecastRes.ok) throw new Error('Failed to load forecast');
-      const forecastData: ForecastData = await forecastRes.json();
+      const forecastRaw = await forecastRes.json();
 
-      setCurrentWeather(currentData);
-      setForecast(forecastData.daily.slice(1, 6)); // next 5 days
+      // 3. Group forecast entries by day
+      const grouped: { [date: string]: ForecastDay } = {};
+      (forecastRaw.list as ForecastListEntry[]).forEach((entry) => {
+        const date = entry.dt_txt.split(' ')[0];
+        if (!grouped[date]) {
+          grouped[date] = {
+            dt: entry.dt,
+            temp: {
+              min: entry.main.temp_min,
+              max: entry.main.temp_max,
+            },
+            weather: entry.weather,
+          };
+        } else {
+          grouped[date].temp.min = Math.min(grouped[date].temp.min, entry.main.temp_min);
+          grouped[date].temp.max = Math.max(grouped[date].temp.max, entry.main.temp_max);
+        }
+      });
+
+      const groupedArray = Object.values(grouped).slice(1, 6); // skip today, next 5
+      setForecast(groupedArray);
     } catch (err) {
       if (err instanceof Error) setError(err.message);
       else setError('An unknown error occurred');
@@ -92,12 +118,10 @@ export default function WeatherPage() {
     }
   };
 
-  // Initial load and when city changes
   useEffect(() => {
     fetchWeather(city);
   }, [city]);
 
-  // Handle search
   const handleSearch = () => {
     if (query.trim()) {
       setCity(query.trim());
@@ -105,7 +129,6 @@ export default function WeatherPage() {
     }
   };
 
-  // Format date helper
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp * 1000);
     return date.toLocaleDateString('en-US', {
@@ -116,8 +139,6 @@ export default function WeatherPage() {
   };
 
   return (
-
-    
     <div className="p-6 space-y-6 min-h-full bg-gray-900 text-white">
       <h1 className="text-3xl font-bold mb-4">Weather Dashboard</h1>
 
@@ -152,7 +173,9 @@ export default function WeatherPage() {
               priority={true}
             />
             <div>
-              <h2 className="text-4xl font-bold">{Math.round(currentWeather.main.temp)}°C</h2>
+              <h2 className="text-4xl font-bold">
+                {Math.round(currentWeather.main.temp)}°C
+              </h2>
               <p className="capitalize">{currentWeather.weather[0].description}</p>
               <p className="mt-1 text-sm opacity-80">
                 {currentWeather.name}, {currentWeather.sys.country}
