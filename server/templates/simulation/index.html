@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Simulation</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/simulation.css' %}">
+</head>
+<body>
+    <div id="simulation-container">
+        <div id="controls">
+            <h2>Traffic Simulation Control Panel</h2>
+            <div class="control-group">
+                <button id="start-btn">Start Simulation</button>
+                <button id="pause-btn">Pause</button>
+                <button id="reset-btn">Reset</button>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <label>Time Elapsed:</label>
+                    <span id="time-elapsed">0</span>
+                </div>
+                <div class="stat-item">
+                    <label>Vehicles Crossed:</label>
+                    <span id="vehicles-crossed">0</span>
+                </div>
+                <div class="stat-item">
+                    <label>Throughput:</label>
+                    <span id="throughput">0</span> vehicles/min
+                </div>
+            </div>
+        </div>
+        
+        <div id="simulation-canvas-container">
+            <canvas id="simulation-canvas" width="1400" height="800"></canvas>
+        </div>
+        
+        <div id="signal-status">
+            <h3>Signal Status</h3>
+            <div class="signals-grid">
+                <div class="signal-item" data-signal="0">
+                    <div class="signal-light red"></div>
+                    <div class="signal-timer">30</div>
+                    <div class="vehicle-count">0</div>
+                </div>
+                <div class="signal-item" data-signal="1">
+                    <div class="signal-light red"></div>
+                    <div class="signal-timer">30</div>
+                    <div class="vehicle-count">0</div>
+                </div>
+                <div class="signal-item" data-signal="2">
+                    <div class="signal-light red"></div>
+                    <div class="signal-timer">30</div>
+                    <div class="vehicle-count">0</div>
+                </div>
+                <div class="signal-item" data-signal="3">
+                    <div class="signal-light red"></div>
+                    <div class="signal-timer">30</div>
+                    <div class="vehicle-count">0</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="{% static 'js/simulation.js' %}"></script>
+</body>
+</html>

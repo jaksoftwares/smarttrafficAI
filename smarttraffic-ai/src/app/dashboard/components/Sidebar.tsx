@@ -1,6 +1,7 @@
 "use client";
 
 import { JSX, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import {
   HiOutlineHome,
@@ -18,6 +19,8 @@ import {
   HiOutlineCamera,
 } from "react-icons/hi";
 
+
+
 interface SidebarProps {
   isOpen: boolean;
   toggleSidebar: () => void;
@@ -26,6 +29,7 @@ interface SidebarProps {
 export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   const [darkMode, setDarkMode] = useState(false);
   const router = useRouter();
+  
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -41,8 +45,10 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   const navigateTo = (path: string) => {
     router.push(path);
   };
+  const pathname = usePathname();
 
   return (
+    
     <div className="flex">
       <div
         className={`bg-white dark:bg-gray-800 text-gray-800 dark:text-white h-screen p-4 transition-all duration-300 ease-in-out fixed top-0 left-0 z-50 ${
@@ -114,36 +120,45 @@ export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
 
   // Reusable NavItem Component
   function NavItem({
-    icon,
-    label,
-    path,
-    newTab = false,
-  }: {
-    icon: JSX.Element;
-    label: string;
-    path: string;
-    newTab?: boolean;
-  }) {
-    const content = (
-      <div className="flex items-center space-x-4">
-        <div className="text-xl">{icon}</div>
-        <p className={`${isOpen ? "block" : "hidden"}`}>{label}</p>
-      </div>
-    );
+  icon,
+  label,
+  path,
+  newTab = false,
+}: {
+  icon: JSX.Element;
+  label: string;
+  path: string;
+  newTab?: boolean;
+}) {
+  const isActive = pathname === path;
 
-    return newTab ? (
-      <a
-        href={path}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="block cursor-pointer"
-      >
-        {content}
-      </a>
-    ) : (
-      <div className="cursor-pointer" onClick={() => navigateTo(path)}>
-        {content}
-      </div>
-    );
-  }
+  const content = (
+    <div
+      className={`flex items-center space-x-4 p-2 rounded-lg ${
+        isActive
+          ? "bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300"
+          : "hover:bg-gray-100 dark:hover:bg-gray-700"
+      }`}
+    >
+      <div className="text-xl">{icon}</div>
+      <p className={`${isOpen ? "block" : "hidden"}`}>{label}</p>
+    </div>
+  );
+
+  return newTab ? (
+    <a
+      href={path}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="block cursor-pointer"
+    >
+      {content}
+    </a>
+  ) : (
+    <div className="cursor-pointer" onClick={() => navigateTo(path)}>
+      {content}
+    </div>
+  );
+}
+
 }

@@ -9,5 +9,6 @@ urlpatterns = [
     path('most_congested_points/', include('most_congested_points.urls')),
     path('congestionTrends/', include('congestionTrends.urls')), 
     path('livefeed/', include('livefeed.urls')),
+    path('junction_simulation/', include('junction_simulation.urls')),
 
 ]
