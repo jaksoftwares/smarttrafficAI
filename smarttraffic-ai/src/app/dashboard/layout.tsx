@@ -82,7 +82,7 @@ export default function Layout({ children }: LayoutProps) {
                   : "mr-0"
               }`}
             >
-              <Topbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} selectedRegion={""} />
+              <Topbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
               <div className="bg-gray-100 dark:bg-gray-900 rounded-lg shadow-md p-6">
                 {children}
               </div>
