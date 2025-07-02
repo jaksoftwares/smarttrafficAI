@@ -6,18 +6,32 @@ import { Facebook, Twitter, Linkedin, Mail, Phone } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white py-10">
-      <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="bg-gray-900 text-white py-10 relative overflow-visible">
+      {/* Floating foot image on the right */}
+      <div className="absolute right-4 -top-16 lg:right-8 lg:-top-24 z-[9999] pointer-events-none">
+        <Image
+          src="/images/foot.png"
+          alt="Foot decoration"
+          width={300}
+          height={300}
+          className="opacity-80 lg:w-[400px] lg:h-[400px]"
+        />
+      </div>
+      
+      <div className="container mx-auto px-6 pr-24 lg:pr-32 grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Brand & About */}
         <div className="flex flex-col">
-          {/* Optimized Logo */}
-          <Image
-            src="/images/logo-g.jpeg"
-            alt="SmartTraffic AI Logo"
-            width={140} // Adjust size for balance
-            height={50}
-            priority // Faster loading
-          />
+          {/* Optimized Logo in Square */}
+          <div className="w-32 h-32 bg-gray-800 border-2 border-gray-600 rounded-lg flex items-center justify-center overflow-hidden mb-2">
+            <Image
+              src="/images/logo-g.jpeg"
+              alt="SmartTraffic AI Logo"
+              width={128}
+              height={128}
+              priority // Faster loading
+              className="object-cover w-full h-full"
+            />
+          </div>
           <h2 className="text-2xl font-bold text-blue-500 mt-2">SmartTraffic AI</h2>
           <p className="mt-4 text-gray-400">
             An AI-powered intelligent traffic management system optimizing urban mobility, 
@@ -31,8 +45,11 @@ export default function Footer() {
           <ul className="mt-4 space-y-2">
             <li><Link href="/" className="text-gray-400 hover:text-blue-400 transition">Home</Link></li>
             <li><Link href="/about" className="text-gray-400 hover:text-blue-400 transition">About</Link></li>
-            <li><Link href="/features" className="text-gray-400 hover:text-blue-400 transition">Features</Link></li>
-            <li><Link href="/impact" className="text-gray-400 hover:text-blue-400 transition">Impact</Link></li>
+            <li><Link href="/about#features" className="text-gray-400 hover:text-blue-400 transition">Features</Link></li>
+            <li><Link href="/about#team" className="text-gray-400 hover:text-blue-400 transition">Team</Link></li>
+            <li><Link href="/blog" className="text-gray-400 hover:text-blue-400 transition">Blog</Link></li>
+            <li><Link href="/demo" className="text-gray-400 hover:text-blue-400 transition">Demo</Link></li>
+            <li><Link href="/faq" className="text-gray-400 hover:text-blue-400 transition">FAQ</Link></li>
             <li><Link href="/contact" className="text-gray-400 hover:text-blue-400 transition">Contact</Link></li>
           </ul>
         </div>
@@ -45,7 +62,7 @@ export default function Footer() {
               <Mail size={18} className="mr-2 text-blue-400" /> support@smarttraffic.ai
             </li>
             <li className="flex items-center text-gray-400">
-              <Phone size={18} className="mr-2 text-blue-400" /> +1 (555) 123-4567
+              <Phone size={18} className="mr-2 text-blue-400" /> +254113129442 .
             </li>
           </ul>
 
