@@ -20,7 +20,6 @@ node_modules/
 *.pyd
 *.log
 .DS_Store
-.env
 
 ### Testing
 smarttraffic-ai/coverage/
@@ -85,3 +84,4 @@ server/docker-compose.yml
 ### Ignore testing files if not required
 /server/tests/
 venv/
+config.bat
