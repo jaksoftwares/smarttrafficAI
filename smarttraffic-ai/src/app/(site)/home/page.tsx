@@ -128,7 +128,7 @@ export default function Home() {
                 </p>
                 <div className="mt-6">
                     <a
-                       href="/features"
+                       href="/about"
                        className="bg-transparent text-white px-8 py-4 rounded-3xl text-lg font-semibold border-2 border-white hover:bg-blue-600 hover:border-blue-600 transition-all duration-300 inline-flex items-center gap-3"
                     >
                     Learn More <ArrowRight size={20} />
